@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- SPInstallPrereqs
+  - Trigger a machine reboot when the installer returns error -1 (download of a package failed), to allow a retry.
+
 ## [5.7.0] - 2025-10-22
 
 ### Fixed
@@ -12,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SPDistributedCacheClientSettings
   - Resource threw an error on SharePoint Server Subscription Edition with Build >= 16.0.18526.20080.
 - SPInstallPrereqs
-  - Trigger a machine reboot when the installer returns the generic error 0x80004005, to allow a retry
+  - Trigger a machine reboot when the installer returns the generic error 0x80004005, to allow a retry.
   - Added Fix for SharePoint Desired State Configuration test for SharePoint SPSE on prerequisite MSVCRT142.
 
 ### Changed

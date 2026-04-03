@@ -49,7 +49,7 @@ try
     InModuleScope -ModuleName $script:DSCResourceFullName -ScriptBlock {
         Describe -Name $Global:SPDscHelper.DescribeHeader -Fixture {
             BeforeAll {
-                Invoke-Command -Scriptblock $Global:SPDscHelper.InitializeScript -NoNewScope
+                Invoke-Command -ScriptBlock $Global:SPDscHelper.InitializeScript -NoNewScope
 
                 # Initialize tests
                 function New-SPDscMockPrereq
@@ -222,6 +222,13 @@ try
                 }
 
                 It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
+                    Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
+
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                }
+
+                It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
 
                     Set-TargetResource @testParams
@@ -342,7 +349,7 @@ try
                                 }
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -565,7 +572,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -635,7 +642,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -705,7 +712,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -768,7 +775,7 @@ try
                         {
                             $requiredParams = @("SQLNCli", "Sync", "AppFabric", "IDFX11", "MSIPCClient", "KB3092423", "WCFDataServices56", "DotNetFx", "MSVCRT11", "MSVCRT14", "ODBC")
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -909,7 +916,7 @@ try
                         {
                             $requiredParams = @("SQLNCli", "Sync", "AppFabric", "IDFX11", "MSIPCClient", "KB3092423", "WCFDataServices56", "DotNetFx", "MSVCRT11", "MSVCRT14", "ODBC")
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
