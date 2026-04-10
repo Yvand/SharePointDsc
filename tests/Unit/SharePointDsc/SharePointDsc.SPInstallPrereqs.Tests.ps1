@@ -221,7 +221,7 @@ try
                     Assert-MockCalled Start-Process
                 }
 
-                It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
+                It "Should call the prerequisite installer from the set method, record error -1 and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
 
                     Set-TargetResource @testParams
@@ -229,7 +229,7 @@ try
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
-                It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
+                It "Should call the prerequisite installer from the set method, record error -2147467259 and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
 
                     Set-TargetResource @testParams
