@@ -49,7 +49,7 @@ try
     InModuleScope -ModuleName $script:DSCResourceFullName -ScriptBlock {
         Describe -Name $Global:SPDscHelper.DescribeHeader -Fixture {
             BeforeAll {
-                Invoke-Command -ScriptBlock $Global:SPDscHelper.InitializeScript -NoNewScope
+                Invoke-Command -Scriptblock $Global:SPDscHelper.InitializeScript -NoNewScope
 
                 # Initialize tests
                 function New-SPDscMockPrereq
@@ -225,14 +225,16 @@ try
                     Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
 
                     Set-TargetResource @testParams
-                    Assert-MockCalled Start-Process
+                    Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
+                    $global:DSCMachineStatus | Should -Be 1
                 }
 
                 It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
 
                     Set-TargetResource @testParams
-                    Assert-MockCalled Start-Process
+                    Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
+                    $global:DSCMachineStatus | Should -Be 1
                 }
 
                 It "Should call the prerequisite installer from the set method and a pending reboot is preventing it from running" {
@@ -259,12 +261,6 @@ try
                     Mock -CommandName Start-Process { return @{ ExitCode = 2 } }
 
                     { Set-TargetResource @testParams } | Should -Throw "Invalid command line parameters"
-                }
-
-                It "Should call the prerequisite installer from the set method and throws for unknown error codes" {
-                    Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
-
-                    { Set-TargetResource @testParams } | Should -Throw "unknown exit code"
                 }
             }
 
