@@ -223,17 +223,23 @@ try
 
                 It "Should call the prerequisite installer from the set method, record error -1 and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
+                    Mock -CommandName Add-SPDscEvent { }
+                    $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
                     Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
+                    Should -Invoke -CommandName Add-SPDscEvent -Scope It
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
                 It "Should call the prerequisite installer from the set method, record error -2147467259 and trigger a reboot for a retry" {
                     Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
+                    Mock -CommandName Add-SPDscEvent { }
+                    $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
                     Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
+                    Should -Invoke -CommandName Add-SPDscEvent -Scope It
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
