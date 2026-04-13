@@ -216,9 +216,11 @@ try
 
                 It "Should call the prerequisite installer from the set method and records the need for a reboot" {
                     Mock -CommandName Start-Process { return @{ ExitCode = 3010 } }
+                    $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
                     Assert-MockCalled Start-Process
+                    $global:DSCMachineStatus | Should -Be 1
                 }
 
                 It "Should call the prerequisite installer from the set method, record error -1 and trigger a reboot for a retry" {
@@ -227,6 +229,8 @@ try
                     $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                    Assert-MockCalled Add-SPDscEvent
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
@@ -236,6 +240,8 @@ try
                     $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                    Assert-MockCalled Add-SPDscEvent
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
