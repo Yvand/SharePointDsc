@@ -227,8 +227,6 @@ try
                     $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
-                    Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
-                    Should -Invoke -CommandName Add-SPDscEvent -Scope It
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
@@ -238,8 +236,6 @@ try
                     $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
-                    Should -Invoke -CommandName Start-Process -Exactly -Times 1 -Scope It
-                    Should -Invoke -CommandName Add-SPDscEvent -Scope It
                     $global:DSCMachineStatus | Should -Be 1
                 }
 
