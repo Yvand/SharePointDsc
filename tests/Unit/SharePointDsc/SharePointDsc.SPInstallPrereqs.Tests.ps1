@@ -216,16 +216,33 @@ try
 
                 It "Should call the prerequisite installer from the set method and records the need for a reboot" {
                     Mock -CommandName Start-Process { return @{ ExitCode = 3010 } }
+                    $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
                     Assert-MockCalled Start-Process
+                    $global:DSCMachineStatus | Should -Be 1
                 }
 
-                It "Should call the prerequisite installer from the set method, record an error and trigger a reboot for a retry" {
-                    Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
+                It "Should call the prerequisite installer from the set method, record error -1 and trigger a reboot for a retry" {
+                    Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
+                    Mock -CommandName Add-SPDscEvent { }
+                    $global:DSCMachineStatus = 0
 
                     Set-TargetResource @testParams
                     Assert-MockCalled Start-Process
+                    Assert-MockCalled Add-SPDscEvent
+                    $global:DSCMachineStatus | Should -Be 1
+                }
+
+                It "Should call the prerequisite installer from the set method, record error -2147467259 and trigger a reboot for a retry" {
+                    Mock -CommandName Start-Process { return @{ ExitCode = -2147467259 } }
+                    Mock -CommandName Add-SPDscEvent { }
+                    $global:DSCMachineStatus = 0
+
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                    Assert-MockCalled Add-SPDscEvent
+                    $global:DSCMachineStatus | Should -Be 1
                 }
 
                 It "Should call the prerequisite installer from the set method and a pending reboot is preventing it from running" {
@@ -252,12 +269,6 @@ try
                     Mock -CommandName Start-Process { return @{ ExitCode = 2 } }
 
                     { Set-TargetResource @testParams } | Should -Throw "Invalid command line parameters"
-                }
-
-                It "Should call the prerequisite installer from the set method and throws for unknown error codes" {
-                    Mock -CommandName Start-Process { return @{ ExitCode = -1 } }
-
-                    { Set-TargetResource @testParams } | Should -Throw "unknown exit code"
                 }
             }
 
@@ -342,7 +353,7 @@ try
                                 }
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -565,7 +576,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -635,7 +646,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -705,7 +716,7 @@ try
                                 $requiredParams = @("DotNet48", "MSVCRT142")
                             }
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -768,7 +779,7 @@ try
                         {
                             $requiredParams = @("SQLNCli", "Sync", "AppFabric", "IDFX11", "MSIPCClient", "KB3092423", "WCFDataServices56", "DotNetFx", "MSVCRT11", "MSVCRT14", "ODBC")
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }
@@ -909,7 +920,7 @@ try
                         {
                             $requiredParams = @("SQLNCli", "Sync", "AppFabric", "IDFX11", "MSIPCClient", "KB3092423", "WCFDataServices56", "DotNetFx", "MSVCRT11", "MSVCRT14", "ODBC")
                         }
-                        Default
+                        default
                         {
                             throw [Exception] "A supported version of SharePoint was not used in testing"
                         }

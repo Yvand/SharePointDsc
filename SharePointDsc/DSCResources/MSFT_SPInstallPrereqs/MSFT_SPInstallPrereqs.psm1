@@ -1202,6 +1202,18 @@ function Set-TargetResource
                     "to reboot the machine before continuing.")
             $global:DSCMachineStatus = 1
         }
+        -1
+        {
+            # ExitCode -1 is when download of a package failed (frequent transient issue in Azure)
+            $message = ("The prerequisite installer has failed with error -1, " + `
+                    "(download of a package failed), do a reboot and retry.")
+            Write-Verbose -Message $message
+            Add-SPDscEvent -Message $message `
+                -EntryType 'Error' `
+                -EventID 100 `
+                -Source $MyInvocation.MyCommand.Source
+            $global:DSCMachineStatus = 1
+        }
         -2147467259
         {
             # This is the generic error 0x80004005, that should be fixed with a reboot
@@ -1483,7 +1495,7 @@ function Test-SPDscPrereqInstallStatus
                     }
                 }
             }
-            Default
+            default
             {
                 $message = ("Unable to search for a prereq with mode '$($itemToCheck.SearchType)'. " + `
                         "please use either 'Equals', 'Like' or 'Match', or 'BundleUpgradeCode'")
